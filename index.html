@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>스케줄 메이커</title>
+    <script>
+      (function(d) {
+      var config = { kitId: 'esw2jrb', scriptTimeout: 8000, async: true },
+      h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load({kitId:config.kitId,scriptTimeout:config.scriptTimeout,async:config.async,active:function(){document.fonts.ready.then(function(){if(typeof drawSchedule==='function')drawSchedule();});}});}catch(e){}};s.parentNode.insertBefore(tk,s)
+      })(document);
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Malgun+Gothic&display=swap" rel="stylesheet">
     <style>
       @font-face {
@@ -603,12 +609,14 @@
     }]
     },
     dayDateOff: {
-    font: '',
-    size: '0px',
-    color: '#f8f9f2',
+    font: 'cheoeumcheoreom-210',
+    size: '54px',
+    color: '#e3d1fe',
     align: 'center',
-    weight: 'normal',
-    enabled: false
+    weight: 'bold',
+    enabled: false,
+    strokeColor: '#271d31',
+    strokeWidth: 6
     },
     mainTitle: {
     font: 'DancingPeople',
@@ -620,11 +628,11 @@
     lineHeight: 1.2
     },
     subTitle: {
-    font: 'Cafe24Danjeonghae',
-    size: '21px',
-    color: '#7a5963',
-    align: 'left',
-    weight: 'normal',
+    font: 'cheoeumcheoreom-210',
+    size: '26px',
+    color: '#9485a6',
+    align: 'center',
+    weight: 'bold',
     enabled: false,
     lineHeight: 1.12
     },
@@ -637,21 +645,21 @@
     enabled: true
     },
     amPm: {
-    font: 'adobe-handwriting-frank',
+    font: 'cheoeumcheoreom-210',
     size: '34px',
     color: '#a6a09a',
     align: 'center',
     weight: 'normal',
-    enabled: true
+    enabled: false
     },
     artistLabel: {
-    font: 'Cafe24Danjeonghae',
-    size: '24px',
-    color: '#6d5948',
+    font: 'cheoeumcheoreom-210',
+    size: '26px',
+    color: '#dac0b9',
     align: 'right',
-    weight: 'normal',
+    weight: 'bold',
     enabled: false,
-    rotate: -6.5
+    letterSpacing: '1px'
     },
     artBy: {
     font: 'DancingPeople',
@@ -701,7 +709,7 @@
     dateOff: [97, 60],
     title: [212, 254],
     sub: [212, 254],
-    time: [192, 399],
+    time: [205, 399],
     icon: [342, 363],
     amPm: [149, 390]
     },
@@ -710,7 +718,7 @@
     dateOff: [97, 60],
     title: [212, 254],
     sub: [212, 254],
-    time: [192, 399],
+    time: [205, 399],
     icon: [342, 363],
     amPm: [149, 390]
     },
@@ -719,7 +727,7 @@
     dateOff: [97, 60],
     title: [212, 254],
     sub: [212, 254],
-    time: [192, 399],
+    time: [205, 399],
     icon: [342, 363],
     amPm: [149, 390]
     },
@@ -728,7 +736,7 @@
     dateOff: [97, 60],
     title: [212, 254],
     sub: [212, 254],
-    time: [192, 399],
+    time: [205, 399],
     icon: [342, 363],
     amPm: [149, 390]
     },
@@ -737,7 +745,7 @@
     dateOff: [97, 62],
     title: [282, 242],
     sub: [282, 242],
-    time: [266, 371],
+    time: [279, 371],
     icon: [482, 333],
     amPm: [223, 361]
     },
@@ -746,7 +754,7 @@
     dateOff: [97, 61],
     title: [282, 242],
     sub: [282, 242],
-    time: [266, 371],
+    time: [279, 371],
     icon: [482, 333],
     amPm: [223, 361]
     },
@@ -755,7 +763,7 @@
     dateOff: [97, 62],
     title: [282, 242],
     sub: [282, 242],
-    time: [266, 371],
+    time: [279, 371],
     icon: [482, 333],
     amPm: [223, 361]
     }
@@ -833,6 +841,12 @@
     PM: 'image/ampm_pm.png'
     },
     dayDatePad: true,
+    artistTextOffsetY: 2,
+    timeGroup: {
+    align: 'center',
+    order: 'ampmFirst',
+    gap: 10
+    },
     dateRangeSep: '',
     artByText: 'Art by',
     showArtBy: true
@@ -863,10 +877,11 @@
     function toggleInputs(day){const on=document.getElementById(day+'_type').checked;const body=document.getElementById(day+'_offline').parentElement;if(body){const center=body.querySelector('.day-col-center');const right=body.querySelector('.day-col-right');if(center){center.style.visibility=on?'visible':'hidden';center.style.pointerEvents=on?'':'none';}if(right){right.style.visibility=on?'visible':'hidden';right.style.pointerEvents=on?'':'none';}}const offline=document.getElementById(day+'_offline');offline.style.visibility=on?'hidden':'visible';drawSchedule();}
     function drawSingleText(context,text,x,y,style){if(!style||style.enabled===false)return;const rad=style.rotate?style.rotate*Math.PI/180:0;if(rad){context.save();context.translate(x,y);context.rotate(rad);x=0;y=0;}context.font=style.weight+' '+style.size+' "'+style.font+'"';context.fillStyle=style.color;context.textAlign=style.align;if('letterSpacing'in context)context.letterSpacing=style.letterSpacing||"0px";if(style.shadow){const s=style.shadow;context.shadowColor=s.color||'rgba(0,0,0,0.4)';context.shadowBlur=s.blur||4;context.shadowOffsetX=s.x||0;context.shadowOffsetY=s.y||0;}if(style.strokes&&style.strokes.length){context.lineJoin="round";for(const _s of style.strokes){context.strokeStyle=_s.color;context.lineWidth=_s.width*2;context.strokeText(text,x,y);}}if(style.strokeColor&&style.strokeWidth){context.strokeStyle=style.strokeColor;context.lineWidth=style.strokeWidth;context.lineJoin="round";context.strokeText(text,x,y);}context.fillText(text,x,y);context.shadowColor='transparent';context.shadowBlur=0;context.shadowOffsetX=0;context.shadowOffsetY=0;if('letterSpacing'in context)context.letterSpacing="0px";if(rad)context.restore();}
     function wrapText(context,text,x,y,maxWidth,style){if(!style||style.enabled===false)return;const _rad=style.rotate?style.rotate*Math.PI/180:0;if(_rad){context.save();context.translate(x,y);context.rotate(_rad);x=0;y=0;}const lineHeight=parseInt(style.size)*(style.lineHeight||1.4);const paragraphs=text.split('//').map(p=>p.trim());const allLines=[];context.font=style.weight+' '+style.size+' "'+style.font+'"';if('letterSpacing'in context)context.letterSpacing=style.letterSpacing||'0px';for(const para of paragraphs){const chars=[...para];let line='';for(const ch of chars){const test=line+ch;if(context.measureText(test).width>maxWidth&&line.length>0){allLines.push(line);line=ch;}else{line=test;}}if(line.length>0)allLines.push(line);}const startY=y-((allLines.length-1)*lineHeight)/2;context.fillStyle=style.color;context.textBaseline='middle';if(style.shadow){const s=style.shadow;context.shadowColor=s.color||'rgba(0,0,0,0.4)';context.shadowBlur=s.blur||4;context.shadowOffsetX=s.x||0;context.shadowOffsetY=s.y||0;}allLines.forEach((line,li)=>{const ly=startY+li*lineHeight;const tw=context.measureText(line).width;let cx;if(style.align==='center')cx=x-tw/2;else if(style.align==='right')cx=x-tw;else cx=x;context.textAlign='left';if(style.strokes&&style.strokes.length){context.lineJoin='round';for(const _s of style.strokes){context.strokeStyle=_s.color;context.lineWidth=_s.width*2;context.strokeText(line,cx,ly);}}if(style.strokeColor&&style.strokeWidth){context.strokeStyle=style.strokeColor;context.lineWidth=style.strokeWidth;context.lineJoin='round';context.strokeText(line,cx,ly);}context.fillText(line,cx,ly);});context.shadowColor='transparent';context.shadowBlur=0;context.shadowOffsetX=0;context.shadowOffsetY=0;if('letterSpacing'in context)context.letterSpacing='0px';context.textAlign=style.align||'left';if(_rad)context.restore();}
+    async function drawTimeGroup(ctx,timeTxt,ampm,bx,by,ic){const tg=config.timeGroup,ts=config.textStyles.time||{},as=config.textStyles.amPm||ts;const _m=(t,st)=>{ctx.font=st.weight+' '+st.size+' "'+st.font+'"';if('letterSpacing'in ctx)ctx.letterSpacing=st.letterSpacing||'0px';const w=ctx.measureText(t).width;if('letterSpacing'in ctx)ctx.letterSpacing='0px';return w;};let wT=0;if(timeTxt&&ts.enabled!==false)wT=_m(timeTxt,ts);let img=null,wA=0;if(ampm){img=config.amPmImage?await getCachedImage(config.amPmImage[ampm]):null;if(img)wA=img.width;else if(as.enabled!==false)wA=_m(ampm,as);}if(!wT&&!wA)return;const gap=(wT&&wA)?(tg.gap||0):0,total=wA+gap+wT;const ax=bx+ic.time[0],ay=by+ic.time[1];const hasA=ic.amPm&&(ic.amPm[0]||ic.amPm[1]);const dyA=hasA?(by+ic.amPm[1]-ay):0;const rad=ts.rotate?ts.rotate*Math.PI/180:0;ctx.save();ctx.translate(ax,ay);if(rad)ctx.rotate(rad);ctx.textBaseline='middle';const x0=tg.align==='center'?-total/2:tg.align==='right'?-total:0;const aFirst=tg.order!=='timeFirst';const xA=aFirst?x0:x0+wT+gap,xT=aFirst?x0+wA+gap:x0;if(wA){if(img)ctx.drawImage(img,Math.round(xA),Math.round(dyA-img.height/2));else drawSingleText(ctx,ampm,xA,dyA,Object.assign({},as,{align:'left',rotate:0}));}if(wT)drawSingleText(ctx,timeTxt,xT,0,Object.assign({},ts,{align:'left',rotate:0}));ctx.restore();}
     function drawJoinedRange(ctx,segs,xy){const base=segs[0][1]||{};if(base.enabled===false)return;const ws=segs.map(([t,st])=>{st=st||base;ctx.font=st.weight+' '+st.size+' "'+st.font+'"';if('letterSpacing'in ctx)ctx.letterSpacing=st.letterSpacing||'0px';return ctx.measureText(t).width;});if('letterSpacing'in ctx)ctx.letterSpacing='0px';const total=ws.reduce((a,b)=>a+b,0);const rad=base.rotate?base.rotate*Math.PI/180:0;ctx.save();ctx.translate(xy[0],xy[1]);if(rad)ctx.rotate(rad);ctx.textBaseline='middle';let cx=base.align==='center'?-total/2:base.align==='right'?-total:0;segs.forEach(([t,st],i)=>{st=Object.assign({},st||base,{align:'left',rotate:0,enabled:true});drawSingleText(ctx,t,cx,0,st);cx+=ws[i];});ctx.restore();}
     function draw3SliceHorizontal(ctx,img,x,y,w,h,leftSlice,rightSlice){if(!img||!img.width)return;const sw2=img.width-leftSlice-rightSlice;const dw2=Math.ceil(w)-leftSlice-rightSlice;if(sw2<0)return;if(dw2<0){const k=Math.ceil(w)/(leftSlice+rightSlice),lw=Math.round(leftSlice*k);ctx.drawImage(img,0,0,leftSlice,img.height,Math.floor(x),Math.floor(y),lw,Math.ceil(h));ctx.drawImage(img,img.width-rightSlice,0,rightSlice,img.height,Math.floor(x)+lw,Math.floor(y),Math.ceil(w)-lw,Math.ceil(h));return;}const dx=Math.floor(x),dy=Math.floor(y),dh=Math.ceil(h);ctx.drawImage(img,0,0,leftSlice,img.height,dx,dy,leftSlice,dh);ctx.drawImage(img,leftSlice,0,sw2,img.height,dx+leftSlice-0.5,dy,dw2+1,dh);ctx.drawImage(img,leftSlice+sw2,0,rightSlice,img.height,dx+leftSlice+dw2,dy,rightSlice,dh);}
     let fontsReady=false;
-    async function drawSchedule(){if(!fontsReady){needsRedraw=true;return;}if(isDrawing){needsRedraw=true;return;}isDrawing=true;try{const[mainBg,iconChzzk,iconYoutube,iconTwitch,iconSoop,iconCime,artistBgImg]=await Promise.all([getCachedImage(config.imgSrc),getCachedImage(config.platforms.chzzk),getCachedImage(config.platforms.youtube),getCachedImage(config.platforms.twitch),getCachedImage(config.platforms.soop),getCachedImage(config.platforms.cime),getCachedImage(config.artistBgImage)]);ctx.fillStyle="#ffffff";ctx.fillRect(0,0,canvas.width,canvas.height);if(uploadedIllust){const w=uploadedIllust.width*imgState.scale;const h=uploadedIllust.height*imgState.scale;const cx=imgState.x+w/2;const cy=imgState.y+h/2;ctx.save();ctx.translate(cx,cy);if(imgState.rotate)ctx.rotate(imgState.rotate*Math.PI/180);ctx.scale(imgState.flipH?-1:1,imgState.flipV?-1:1);ctx.drawImage(uploadedIllust,-w/2,-h/2,w,h);ctx.restore();}if(!mainBg){ctx.fillStyle="#333333";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle="#ff6b6b";ctx.font="bold 50px 'Malgun Gothic'";ctx.textAlign="center";ctx.fillText("배경 이미지(image/bg.png)를 찾을 수 없습니다!",canvas.width/2,canvas.height/2-50);}else{ctx.drawImage(mainBg,0,0,canvas.width,canvas.height);}if(weekData.startMonth){const tc=config.topDateCoords;ctx.textBaseline="middle";drawSingleText(ctx,weekData.startMonth,tc.startMonth[0],tc.startMonth[1],config.textStyles.topMonth);drawSingleText(ctx,weekData.endMonth,tc.endMonth[0],tc.endMonth[1],config.textStyles.topMonth);drawSingleText(ctx,weekData.startDate,tc.startDate[0],tc.startDate[1],config.textStyles.topDay);drawSingleText(ctx,weekData.endDate,tc.endDate[0],tc.endDate[1],config.textStyles.topDay);const startText=weekData.startMonth+'.'+weekData.startDate;const endText=weekData.endMonth+'.'+weekData.endDate;if(config.dateRangeSep&&config.dateRangeStartCoords){drawJoinedRange(ctx,[[startText,config.textStyles.dateRangeStart],[config.dateRangeSep,config.textStyles.dateRangeSep||config.textStyles.dateRangeStart],[endText,config.textStyles.dateRangeEnd||config.textStyles.dateRangeStart]],config.dateRangeStartCoords);}else{if(config.dateRangeStartCoords){const[sx,sy]=config.dateRangeStartCoords;drawSingleText(ctx,startText,sx,sy,config.textStyles.dateRangeStart||{});}if(config.dateRangeEndCoords){const[ex,ey]=config.dateRangeEndCoords;drawSingleText(ctx,endText,ex,ey,config.textStyles.dateRangeEnd||{});}}}const iconMap={chzzk:iconChzzk,youtube:iconYoutube,twitch:iconTwitch,soop:iconSoop,cime:iconCime};ctx.textBaseline="middle";for(const[i,day]of['mon','tue','wed','thu','fri','sat','sun'].entries()){const dc=config.dayConfig[day];if(!dc)continue;const[boxX,boxY]=dc.boxCoords;const[boxW,boxH]=dc.boxSize;const isOnline=document.getElementById(day+'_type').checked;const boxImg=await getCachedImage(isOnline?dc.boxOn:dc.boxOff);if(boxImg){ctx.drawImage(boxImg,boxX,boxY,boxW,boxH);}if(weekData.dayTexts[i]){const dateStyle=isOnline?(config.textStyles.dayDateOn||config.textStyles.dayDate):(config.textStyles.dayDateOff||config.textStyles.dayDate);const _icDate=config.innerCoords[day]||config.innerCoords;const dateCoords=isOnline?_icDate.dateOn:_icDate.dateOff;drawSingleText(ctx,weekData.dayTexts[i],boxX+dateCoords[0],boxY+dateCoords[1],dateStyle);}if(isOnline){const _ic=config.innerCoords[day]||config.innerCoords;const main=document.getElementById(day).value;const sub=document.getElementById(day+'_sub').value;if(main){const parsedMain=applySizeTag(main,config.textStyles.mainTitle);const titleY=sub?_ic.title[1]:(_ic.title[1]+_ic.sub[1])/2;wrapText(ctx,parsedMain.text,boxX+_ic.title[0],boxY+titleY,config.textMaxWidth,parsedMain.style);}if(sub){const parsedSub=applySizeTag(sub,config.textStyles.subTitle);wrapText(ctx,parsedSub.text,boxX+_ic.sub[0],boxY+_ic.sub[1],config.textMaxWidth,parsedSub.style);}const time=document.getElementById(day+'_time').value;if(time)drawSingleText(ctx,to12Hour(time),boxX+_ic.time[0],boxY+_ic.time[1],config.textStyles.time);const icon=iconMap[document.getElementById(day+'_platform').value];if(icon)ctx.drawImage(icon,boxX+_ic.icon[0],boxY+_ic.icon[1],config.iconSize[0],config.iconSize[1]);const _tval=document.getElementById(day+'_time')?.value||'';const _th=parseInt(_tval.split(':')[0]||'-1');const dayAmPm=config.time24h?'':(_th>=0?(_th<12?'AM':'PM'):'');if(dayAmPm&&_ic.amPm&&(_ic.amPm[0]||_ic.amPm[1])){const _ampmImg=config.amPmImage?await getCachedImage(config.amPmImage[dayAmPm]):null;if(_ampmImg){ctx.drawImage(_ampmImg,Math.round(boxX+_ic.amPm[0]-_ampmImg.width/2),Math.round(boxY+_ic.amPm[1]-_ampmImg.height/2));}else drawSingleText(ctx,dayAmPm,boxX+_ic.amPm[0],boxY+_ic.amPm[1],config.textStyles.amPm||config.textStyles.time);}}}const artistName=document.getElementById('artistName').value;if(artistName){ctx.textBaseline="middle";const nStyle=config.textStyles.artist;const abStyle=config.textStyles.artBy||config.textStyles.artistLabel;const artByText=config.artByText||"Art by";const showArtBy=config.showArtBy!==false;ctx.font=abStyle.weight+' '+abStyle.size+' "'+abStyle.font+'"';if('letterSpacing'in ctx)ctx.letterSpacing=abStyle.letterSpacing||"0px";const artbyW=showArtBy?ctx.measureText(artByText+' ').width:0;ctx.font=nStyle.weight+' '+nStyle.size+' "'+nStyle.font+'"';if('letterSpacing'in ctx)ctx.letterSpacing=nStyle.letterSpacing||"0px";const nameW=ctx.measureText(artistName).width;const totalW=artbyW+nameW;const boxW=totalW+config.artistPadding[0]*2;const boxH=Math.max(parseInt(nStyle.size),parseInt(abStyle.size))+config.artistPadding[1]*2;const _ac=config.artistCoords;let boxX;if(nStyle.align==='left')boxX=0;else if(nStyle.align==='center')boxX=-boxW/2;else boxX=-boxW;const boxY=-boxH;const rad=nStyle.rotate?nStyle.rotate*Math.PI/180:0;ctx.save();ctx.translate(_ac[0],_ac[1]);if(rad)ctx.rotate(rad);if(artistBgImg){draw3SliceHorizontal(ctx,artistBgImg,boxX,boxY,boxW,boxH,config.artistBgSlice[0],config.artistBgSlice[1]);}const midY=boxY+boxH/2+2;let curX=boxX+config.artistPadding[0];ctx.textBaseline='middle';if(showArtBy){ctx.font=abStyle.weight+' '+abStyle.size+' "'+abStyle.font+'"';if('letterSpacing'in ctx)ctx.letterSpacing=abStyle.letterSpacing||"0px";ctx.textAlign='left';ctx.fillStyle=abStyle.color;ctx.fillText(artByText+' ',curX,midY);curX+=artbyW;}ctx.font=nStyle.weight+' '+nStyle.size+' "'+nStyle.font+'"';if('letterSpacing'in ctx)ctx.letterSpacing=nStyle.letterSpacing||"0px";ctx.textAlign='left';ctx.fillStyle=nStyle.color;ctx.fillText(artistName,curX,midY);if('letterSpacing'in ctx)ctx.letterSpacing="0px";ctx.restore();}}finally{isDrawing=false;if(needsRedraw){needsRedraw=false;drawSchedule();}}}
+    async function drawSchedule(){if(!fontsReady){needsRedraw=true;return;}if(isDrawing){needsRedraw=true;return;}isDrawing=true;try{const[mainBg,iconChzzk,iconYoutube,iconTwitch,iconSoop,iconCime,artistBgImg]=await Promise.all([getCachedImage(config.imgSrc),getCachedImage(config.platforms.chzzk),getCachedImage(config.platforms.youtube),getCachedImage(config.platforms.twitch),getCachedImage(config.platforms.soop),getCachedImage(config.platforms.cime),getCachedImage(config.artistBgImage)]);ctx.fillStyle="#ffffff";ctx.fillRect(0,0,canvas.width,canvas.height);if(uploadedIllust){const w=uploadedIllust.width*imgState.scale;const h=uploadedIllust.height*imgState.scale;const cx=imgState.x+w/2;const cy=imgState.y+h/2;ctx.save();ctx.translate(cx,cy);if(imgState.rotate)ctx.rotate(imgState.rotate*Math.PI/180);ctx.scale(imgState.flipH?-1:1,imgState.flipV?-1:1);ctx.drawImage(uploadedIllust,-w/2,-h/2,w,h);ctx.restore();}if(!mainBg){ctx.fillStyle="#333333";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle="#ff6b6b";ctx.font="bold 50px 'Malgun Gothic'";ctx.textAlign="center";ctx.fillText("배경 이미지(image/bg.png)를 찾을 수 없습니다!",canvas.width/2,canvas.height/2-50);}else{ctx.drawImage(mainBg,0,0,canvas.width,canvas.height);}if(weekData.startMonth){const tc=config.topDateCoords;ctx.textBaseline="middle";drawSingleText(ctx,weekData.startMonth,tc.startMonth[0],tc.startMonth[1],config.textStyles.topMonth);drawSingleText(ctx,weekData.endMonth,tc.endMonth[0],tc.endMonth[1],config.textStyles.topMonth);drawSingleText(ctx,weekData.startDate,tc.startDate[0],tc.startDate[1],config.textStyles.topDay);drawSingleText(ctx,weekData.endDate,tc.endDate[0],tc.endDate[1],config.textStyles.topDay);const startText=weekData.startMonth+'.'+weekData.startDate;const endText=weekData.endMonth+'.'+weekData.endDate;if(config.dateRangeSep&&config.dateRangeStartCoords){drawJoinedRange(ctx,[[startText,config.textStyles.dateRangeStart],[config.dateRangeSep,config.textStyles.dateRangeSep||config.textStyles.dateRangeStart],[endText,config.textStyles.dateRangeEnd||config.textStyles.dateRangeStart]],config.dateRangeStartCoords);}else{if(config.dateRangeStartCoords){const[sx,sy]=config.dateRangeStartCoords;drawSingleText(ctx,startText,sx,sy,config.textStyles.dateRangeStart||{});}if(config.dateRangeEndCoords){const[ex,ey]=config.dateRangeEndCoords;drawSingleText(ctx,endText,ex,ey,config.textStyles.dateRangeEnd||{});}}}const iconMap={chzzk:iconChzzk,youtube:iconYoutube,twitch:iconTwitch,soop:iconSoop,cime:iconCime};ctx.textBaseline="middle";for(const[i,day]of['mon','tue','wed','thu','fri','sat','sun'].entries()){const dc=config.dayConfig[day];if(!dc)continue;const[boxX,boxY]=dc.boxCoords;const[boxW,boxH]=dc.boxSize;const isOnline=document.getElementById(day+'_type').checked;const boxImg=await getCachedImage(isOnline?dc.boxOn:dc.boxOff);if(boxImg){ctx.drawImage(boxImg,boxX,boxY,boxW,boxH);}if(weekData.dayTexts[i]){const dateStyle=isOnline?(config.textStyles.dayDateOn||config.textStyles.dayDate):(config.textStyles.dayDateOff||config.textStyles.dayDate);const _icDate=config.innerCoords[day]||config.innerCoords;const dateCoords=isOnline?_icDate.dateOn:_icDate.dateOff;drawSingleText(ctx,weekData.dayTexts[i],boxX+dateCoords[0],boxY+dateCoords[1],dateStyle);}if(isOnline){const _ic=config.innerCoords[day]||config.innerCoords;const main=document.getElementById(day).value;const sub=document.getElementById(day+'_sub').value;if(main){const parsedMain=applySizeTag(main,config.textStyles.mainTitle);const titleY=sub?_ic.title[1]:(_ic.title[1]+_ic.sub[1])/2;wrapText(ctx,parsedMain.text,boxX+_ic.title[0],boxY+titleY,config.textMaxWidth,parsedMain.style);}if(sub){const parsedSub=applySizeTag(sub,config.textStyles.subTitle);wrapText(ctx,parsedSub.text,boxX+_ic.sub[0],boxY+_ic.sub[1],config.textMaxWidth,parsedSub.style);}const time=document.getElementById(day+'_time').value;if(time&&!config.timeGroup)drawSingleText(ctx,to12Hour(time),boxX+_ic.time[0],boxY+_ic.time[1],config.textStyles.time);const icon=iconMap[document.getElementById(day+'_platform').value];if(icon)ctx.drawImage(icon,boxX+_ic.icon[0],boxY+_ic.icon[1],config.iconSize[0],config.iconSize[1]);const _tval=document.getElementById(day+'_time')?.value||'';const _th=parseInt(_tval.split(':')[0]||'-1');const dayAmPm=config.time24h?'':(_th>=0?(_th<12?'AM':'PM'):'');if(config.timeGroup){await drawTimeGroup(ctx,time?to12Hour(time):'',dayAmPm,boxX,boxY,_ic);}else if(dayAmPm&&_ic.amPm&&(_ic.amPm[0]||_ic.amPm[1])){const _ampmImg=config.amPmImage?await getCachedImage(config.amPmImage[dayAmPm]):null;if(_ampmImg){ctx.drawImage(_ampmImg,Math.round(boxX+_ic.amPm[0]-_ampmImg.width/2),Math.round(boxY+_ic.amPm[1]-_ampmImg.height/2));}else drawSingleText(ctx,dayAmPm,boxX+_ic.amPm[0],boxY+_ic.amPm[1],config.textStyles.amPm||config.textStyles.time);}}}const artistName=document.getElementById('artistName').value;if(artistName){ctx.textBaseline="middle";const nStyle=config.textStyles.artist;const abStyle=config.textStyles.artBy||config.textStyles.artistLabel;const artByText=config.artByText||"Art by";const showArtBy=config.showArtBy!==false;ctx.font=abStyle.weight+' '+abStyle.size+' "'+abStyle.font+'"';if('letterSpacing'in ctx)ctx.letterSpacing=abStyle.letterSpacing||"0px";const artbyW=showArtBy?ctx.measureText(artByText+' ').width:0;ctx.font=nStyle.weight+' '+nStyle.size+' "'+nStyle.font+'"';if('letterSpacing'in ctx)ctx.letterSpacing=nStyle.letterSpacing||"0px";const nameW=ctx.measureText(artistName).width;const totalW=artbyW+nameW;const boxW=totalW+config.artistPadding[0]*2;const boxH=Math.max(parseInt(nStyle.size),parseInt(abStyle.size))+config.artistPadding[1]*2;const _ac=config.artistCoords;let boxX;if(nStyle.align==='left')boxX=0;else if(nStyle.align==='center')boxX=-boxW/2;else boxX=-boxW;const boxY=-boxH;const rad=nStyle.rotate?nStyle.rotate*Math.PI/180:0;ctx.save();ctx.translate(_ac[0],_ac[1]);if(rad)ctx.rotate(rad);if(artistBgImg){draw3SliceHorizontal(ctx,artistBgImg,boxX,boxY,boxW,boxH,config.artistBgSlice[0],config.artistBgSlice[1]);}const midY=boxY+boxH/2+(config.artistTextOffsetY!=null?config.artistTextOffsetY:2);let curX=boxX+config.artistPadding[0];ctx.textBaseline='middle';if(showArtBy){ctx.font=abStyle.weight+' '+abStyle.size+' "'+abStyle.font+'"';if('letterSpacing'in ctx)ctx.letterSpacing=abStyle.letterSpacing||"0px";ctx.textAlign='left';ctx.fillStyle=abStyle.color;ctx.fillText(artByText+' ',curX,midY);curX+=artbyW;}ctx.font=nStyle.weight+' '+nStyle.size+' "'+nStyle.font+'"';if('letterSpacing'in ctx)ctx.letterSpacing=nStyle.letterSpacing||"0px";ctx.textAlign='left';ctx.fillStyle=nStyle.color;ctx.fillText(artistName,curX,midY);if('letterSpacing'in ctx)ctx.letterSpacing="0px";ctx.restore();}}finally{isDrawing=false;if(needsRedraw){needsRedraw=false;drawSchedule();}}}
     function saveData(showAlert=false){const data={};document.querySelectorAll('.sched-input,.sched-select').forEach(el=>{data[el.id]=el.value;});document.querySelectorAll('.sched-toggle').forEach(chk=>{data[chk.id]=chk.checked;});data.illust=illustBase64;data.imgState=imgState;try{localStorage.setItem('scheduleDataFinal',JSON.stringify(data));}catch{data.illust=null;localStorage.setItem('scheduleDataFinal',JSON.stringify(data));if(showAlert)alert("첨부된 이미지 용량이 커서 브라우저에 임시 저장할 수 없습니다.");}}
     function loadData(){const saved=localStorage.getItem('scheduleDataFinal');if(!saved)return;const data=JSON.parse(saved);for(const key in data){if(key==='imgState'||key==='illust')continue;const el=document.getElementById(key);if(el)el.type==='checkbox'?(el.checked=data[key]):(el.value=data[key]);}if(data.imgState)imgState=data.imgState;if(data.illust){illustBase64=data.illust;loadIllustImage(illustBase64,false);document.getElementById('uploadFileName').textContent="저장된 일러스트 불러옴";document.getElementById('dropZone').style.display='none';document.getElementById('uploadPreview').style.display='block';document.getElementById('imageControlPanel').style.display='block';canvas.classList.add('draggable');}if(document.getElementById('weekPicker').value)handleDateSelect();['mon','tue','wed','thu','fri','sat','sun'].forEach(day=>{toggleInputs(day);const ti=document.getElementById(day+'_time');const tb=document.getElementById(day+'_timebtn');if(ti&&tb&&ti.value)tb.textContent=ti.value;});}
     function clearData(){if(!confirm("모든 텍스트를 초기화하시겠습니까?"))return;document.querySelectorAll('.sched-input').forEach(el=>{el.value='';});document.querySelectorAll('.platform-select').forEach(el=>{el.value='none';});document.querySelectorAll('.sched-toggle').forEach(toggle=>{toggle.checked=true;toggleInputs(toggle.id.replace('_type',''));});removeIllust();['mon','tue','wed','thu','fri','sat','sun'].forEach(d=>{const tb=document.getElementById(d+'_timebtn');if(tb)tb.textContent='시간';});weekData={startMonth:"",startDate:"",endMonth:"",endDate:"",dayTexts:[]};saveData();drawSchedule();}
